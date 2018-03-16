@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {%include 'header.html'%}
+    <link href="{{url_for('static',filename='style.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{url_for('static',filename='footer.css')}}" rel="stylesheet" type="text/css"/>
+
+    <script src="{{url_for('static',filename='dashboard.js')}}" type="text/javascript"></script>
+    <script src="{{url_for('static',filename='greeks_plot.js')}}" type="text/javascript"></script>
+
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse" id="navbar">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+            <img id="navbar-logo" src="{{url_for('static',filename='logo.png')}}" width="30" height="30" alt="Logo">
+            <a class="navbar-brand" href="#">{{title}}</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+            <li><a class="website" href="https://myfinancialmarkets.club" target="_blank">My Financial Markets</a></li>
+            <li><a class="website" href="/">Pricer</a></li>
+        </ul>
+    </div>
+  </div>
+</nav>
+<section id="payoff" class="background-img">
+    <div class="container-fluid" id="results">
+        <div class="row" style="padding-top: 0px; padding-bottom: 30px;">
+            <div id="numerical-results" class="col-lg-6 col-md-6 col-sm-6">
+                <!--All the numerical results go here-->
+                <div>
+                    <table class="table text-center well table-responsive" cellspacing="0" cellpadding="0" style="border-radius:12px; border:none; margin-top: 60px;">
+                    <caption style="color:white;">Your inputs</caption>
+                        <thead>
+                        <tr>
+                            <th></th>
+                            {% for name in input_names%}
+                            <th scope="col" class="text-center">{{name}}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Input</th>
+                            {% for input in inputs %}
+                            <td>{{input}}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div>
+                <table class="table table-striped text-center well" cellspacing="0" cellpadding="0" style="border-radius:12px!important; border:none; margin-top:30px;">
+                    <caption style="color:white;">Results</caption>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% for col in columns_name %}
+                                <th scope="col" class="text-center">{{col}}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                        <tr>
+                            <th scope="row">{{row[0]}}</th>
+                            <td>{{row[1]}}</td>
+                            <td>{{row[2]}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" style="padding-top:40px;">
+                <div class="plotly-graph-div" id="plot-payoff" style="height:80%;">
+                    <!--Payoff graph goes here-->
+                </div>
+            </div>
+        </div>
+        <div class="row" style="padding-bottom:20px; margin-top:20px;">
+            <div class="col-lg-5 col-md-5 col-sm-5">
+                <hr>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2" style="text-align:center;">
+                <a id="btn-down" href="#greeks" class="btn btn-large smoothscroll"><span class="glyphicon glyphicon-chevron-down"></span></a>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-5" style="padding-left:20px;">
+                <hr>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="greeks">
+    <div class="container-fluid">
+        <div class="row" id="greeks-div" style="margin-bottom:10px;">
+            <h1 class="text-center" style="color:white; padding-bottom:20px;">
+            <div>
+                <strong>Greeks</strong>
+            </div>
+            </h1>
+            <!--Delta/Gamma/Vega/Theta graphs go here-->
+        </div>
+        <div class="row">
+            <div class="col-lg-offset-5 col-lg-2" style="text-align:center; margin-bottom:20px; margin-top:20px;">
+                <a href="#navbar" class="btn btn-large smoothscroll" id="btn-up"><span class="glyphicon glyphicon-chevron-up"></span></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include 'footer.html' %}
+
+<script type="text/javascript">
+$("#results").hide();
+$("#results").fadeIn(2000);
+
+//Handles the click on the two buttons on the dashboard
+$(function(){
+        $('.smoothscroll').on('click', function (e) {
+            var target = this.hash,
+            $target    = $(target);
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            $('html, body').stop().animate({
+                'scrollTop': $target.offset().top
+            }, 800, 'swing', function () {
+                window.location.hash = target;
+            });
+
+   });
+});
+
+//Call the graph plotter when window is loaded:
+$(function(){
+    plot_payoff({{strike}},{{payoff}},{{titles|safe}});
+
+    if ({{isOneLeg}}==true){
+        graph_greeks_one_leg({{strike}},{{greeks}},{{greeks_titles|safe}});
+    }
+    else{
+        graph_greeks_plot({{strike}},{{greeks}},{{greeks_titles|safe}});
+    }
+});
+
+</script>
+</body>
+</html>

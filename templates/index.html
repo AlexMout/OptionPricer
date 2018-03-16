@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--Every bootstrap .css are called inside the header template-->
+    {%include 'header.html'%}
+    <link href="{{url_for('static',filename='style.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{url_for('static',filename='footer.css')}}" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript" src="{{url_for('static',filename='index.js')}}"></script>
+</head>
+<body background="{{url_for('static',filename='background.jpg')}}">
+<nav class="navbar navbar-inverse" id="navbar">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <h1 class="navbar-brand" style="position: absolute; width: 100%; left: 0; text-align: center; margin:0 auto; color:white;">{{title}}</h1>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-left">
+            <li><a class="website" href="https://myfinancialmarkets.club" target="_blank">My Financial Markets</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+            <div style="display: flex; align-items: center;">
+                <img src="{{url_for('static',filename='plus.png')}}" style="height:30px; width:30px; margin-right: -10px;"/>
+            <li><p class="navbar-text">New versions will bring : <a id="version_features" style="color:#b78c33; text-decoration:none; vertical-align:middle;"></a></p></li>
+            </div>
+        </ul>
+    </div>
+
+  </div>
+</nav>
+    <div class="container-fluid">
+        <div class="row">
+            <h1 class="text-center">
+                <div id="div-title">
+                    <strong style="color:#333;">Option Pricer</strong>
+                </div>
+            </h1>
+        </div>
+        <br/>
+        <div class="row">
+            <form class="col-lg-offset-3 col-lg-6 well" id="pricing_form" method="post" action="get_price" onsubmit="return validate()" style="border-radius:35px;">
+                <div class="form-group">
+                    <label for="strategy">Product</label>
+                    <select id="strategy" name="strategy" class="form-control selectpicker" onchange="on_strategy_select()">
+                        <option>Vanilla</option>
+                        <option>Digital</option>
+                        <option>Call Spread</option>
+                        <option>Put Spread</option>
+                        <option>Straddle</option>
+                        <option>Strangle</option>
+                        <option>Risk Reversal</option>
+                        <option>Calendar Spread</option>
+                        <option disabled>25 Delta Risk-Reversal</option>
+                        <option disabled>Butterfly</option>
+                        <option disabled>Asian</option>
+                        <option disabled>Lookback</option>
+                        <option disabled>Barrier</option>
+                        <option disabled>Autocall</option>
+                        <option disabled>Create Payoff</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <select id="type" name="type" class="form-control selectpicker">
+                        <option>European</option>
+                        <option disabled>American</option>
+                        <option disabled>Bermudean</option>
+                    </select>
+                </div>
+                <div id="spot_div" class="form-group">
+                    <label for="spot">Spot</label>
+                    <input type="number" id="spot" step="any" name="spot" class="form-control" placeholder="100"/>
+                    <span id="spot-help" class="help-block">Spot should be a positive number!</span>
+                </div>
+                <div id="strike_div" class="form-group">
+                    <label id="label-strike" for="strike">Strike</label>
+                    <input type="number" id="strike" step="any" name="strike" class="form-control" placeholder="100"/>
+                    <span id="strike-help" class="help-block">Strike must be a positive number!</span>
+                </div>
+                <div id="strike2_div" class="form-group">
+                    <label for="strike2" class="strike2">Strike Leg 2</label>
+                    <input type="number" id="strike2" step="any" name="strike2" class="form-control" placeholder="105"/>
+                    <span id="strike2-help" class="help-block">Strike 2 must be a positive number and greater than Strike 1!</span>
+                </div>
+                <div id="maturity_div" class="form-group">
+                    <label for="maturity_datepicker">Maturity</label>
+                    <div class='input-group date'>
+                        <input type='text' class="form-control" id="maturity_datepicker" name="maturity" required/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+                <div id="maturity2_div" class="form-group">
+                    <label for="maturity2_datepicker">Maturity Leg 2</label>
+                    <div class='input-group date'>
+                        <input type='text' class="form-control" id="maturity2_datepicker" name="maturity2"/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <span id="maturity-help" class="help-block">Maturity of leg 2 must be longer!</span>
+                </div>
+                <div id="volatility_div" class="form-group">
+                    <label for="volatility">Volatility</label>
+                    <input type="number" id="volatility" step="any" name="volatility" class="form-control" placeholder="0.2"/>
+                    <span id="volatility-help" class="help-block">Volatility must be a positive number!</span>
+                </div>
+                <div id="rate_div" class="form-group">
+                    <label for="interest-rate">Interest Rate</label>
+                    <input type="number" id="interest-rate" step="any" name="interest-rate" class="form-control" placeholder="0.01"/>
+                </div>
+                <div class="button-submit">
+                    <input type="submit" value="Price it!" class="btn btn-large"/>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% include 'footer.html' %}
+
+<script type="text/javascript">
+    //Animation at page opening :
+    $("#div-title").hide();
+    $("#pricing_form").hide();
+    $("#pricing_form").fadeIn(2000);
+    $("#div-title").fadeIn(2000);
+
+    //Set the options for the datepicker :
+    var date = new Date();
+    date.setDate(date.getDate()+1);
+    var options={
+        format: 'dd/mm/yyyy',
+        todayHighlight: true,
+        startDate: date,
+        autoclose:true,
+      };
+    $('#maturity_datepicker').datepicker(options);
+    $('#maturity2_datepicker').datepicker(options);
+
+    //Hide help span at the page opening :
+    $(".help-block").hide();
+
+    //Hide the strike 2 by default :
+    $("#strike2_div").hide();
+
+    //Hide second datepicker by default :
+    $("#maturity2_div").hide();
+
+    //Displays features that will arrive soon :
+    var current_index = 1;
+    var features = ["Risk Reversal 25D (V2)","Dividends (V2)","Barrier (V2)","Lookback (V2)","Enter a ticker (V3)","American (V3)","Autocall (V4)","Create your payoff (V5)"];
+    var element = $("#version_features");
+    element.html(features[0]);
+    setInterval(changeTextNewFeatures,2000);
+    function changeTextNewFeatures()
+    {
+        element.html(features[current_index]);
+        current_index++;
+        if (current_index >= features.length) current_index=0;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+body, html{
+    height:100%;
+}
+
+#pricing-form{
+    border-radius:35px;
+}
+
+.background-img{
+    background-image: url("background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    min-height:620px;
+}
+
+#greeks{
+    background-image: url("background2.jpg")
+}
+
+strong {
+    color:white;
+}
+
+.text-muted {
+    color:white;
+}
+
+#numerical-results{
+    padding-left:100px;
+    padding-right:100px;
+}
+
+#plot-payoff{
+
+}
+
+
+#btn-down{
+    padding-left:40px;
+    padding-right:40px;
+    border-radius: 20px;
+    background-color: transparent;
+    margin-left: 0px;
+    border-color: white;
+    color: white;
+}
+
+#btn-up{
+padding-left:40px;
+    padding-right:40px;
+    border-radius: 20px;
+    background-color: transparent;
+    margin-left: 0px;
+    border-color: white;
+    color: white;
+}
+
+#btn-up:hover{
+    background: #b78c33;
+    color: #fff;
+    border-color: #b78c33;
+}
+
+#btn-back{
+     border-radius: 20px;
+     background-color: transparent;
+     margin-left: 0px;
+     border-color: white;
+     color: white
+}
+
+.navbar{
+    margin-bottom:0px;
+    border-bottom: 4px solid #b78c33
+}
+
+.navbar-header{
+    display: flex;
+}
+
+.navbar-brand{
+    padding-left:30px;
+}
+
+.navbar-brand:hover
+{
+    color:#b78c33!important;
+}
+
+#navbar-logo{
+    margin-left:10px;
+    margin-top:8px;
+}
+
+.website:hover{
+    color:#b78c33;
+}
+
+div.button-submit{
+    text-align : center;
+    margin-bottom: 10px;
+}
+
+div.button-submit input{
+    border-radius: 20px;
+    background-color: #CCC;
+}
+
+div.button-submit input:hover{
+    background-color: #b78c33;
+    color:white;
+}
+
+ul.nav li a:hover{
+    color:#b78c33!important;
+}
