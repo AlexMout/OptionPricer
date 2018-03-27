@@ -19,7 +19,7 @@ def get_price():
     dict_args['maturity'] = request.form.get("maturity")
     dict_args['maturity2'] = request.form.get("maturity2",0)
     dict_args['volatility'] = request.form.get("volatility",0.2)
-    dict_args['interest_rate'] = request.form.get("interest_rate",0)
+    dict_args['interest_rate'] = request.form.get("interest-rate",0)
 
     #The get_price() method from View_Model returns a render_template with the good html page
     return vm.View_Model(dict_args).get_price()
