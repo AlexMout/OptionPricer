@@ -13,3 +13,6 @@ In MAC : Go into the project => cd "your_path"
         
 # Important
 This is my first web application, my first use of Flask, Javascript and Bootstrap!
+
+# Unit Test
+I will progressively add unit test case for correct debug and code checking 
